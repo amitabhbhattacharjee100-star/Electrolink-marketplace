@@ -1,0 +1,47 @@
+name: Deploy TechDrop Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Render / Heroku
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ---------------------------------------------------------------
+      # Render deployment
+      # Uncomment and set RENDER_DEPLOY_HOOK_URL in repository secrets
+      # to trigger an automatic deploy on Render.
+      # ---------------------------------------------------------------
+      # - name: Trigger Render Deploy
+      #   run: |
+      #     curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+
+      # ---------------------------------------------------------------
+      # Heroku deployment
+      # Uncomment and set HEROKU_API_KEY + HEROKU_APP_NAME in secrets
+      # to deploy directly to Heroku.
+      # ---------------------------------------------------------------
+      # - name: Deploy to Heroku
+      #   uses: akhileshns/heroku-deploy@v3.13.15
+      #   with:
+      #     heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+      #     heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+      #     heroku_email: ${{ secrets.HEROKU_EMAIL }}
