@@ -626,7 +626,7 @@
 
         <div class="field">
           <label>Amazon URL (affiliate link)</label>
-          <input id="adminUrl" placeholder="https://www.amazon.com/dp/ASIN?tag=yourtag-20" />
+          <input id="adminUrl" placeholder="https://www.amazon.ca/dp/ASIN?tag=yourtag-20" />
         </div>
 
         <div class="field">
@@ -723,6 +723,9 @@
 const DEMO_MODE   = true;
 const BACKEND_URL = "http://localhost:4000";
 
+// Ontario/Canada default
+const AMAZON_BASE = "https://www.amazon.ca";
+
 const STORAGE_CUSTOM_PRODUCTS = "techdrop_custom_products_v1";
 const STORAGE_CART = "techdrop_cart_v1";
 
@@ -735,7 +738,7 @@ const DEMO_PRODUCTS = [
     image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&q=80",
     badge:"Best Seller", badgeColor:"#f59e0b",
     features:["30-hr battery","LDAC Hi-Res","Multipoint"],
-    url:"https://www.amazon.com/dp/B09XS7JWHH?tag=YOUR_TAG",
+    url:"https://www.amazon.ca/dp/B09XS7JWHH?tag=YOUR_TAG",
   },
   {
     asin:"B0BDHX8Z63", cat:"Laptops",
@@ -744,7 +747,7 @@ const DEMO_PRODUCTS = [
     image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1200&q=80",
     badge:"Popular", badgeColor:"#3b82f6",
     features:["M2 chip","18-hr battery","15.3\" Retina"],
-    url:"https://www.amazon.com/dp/B0BDHX8Z63?tag=YOUR_TAG",
+    url:"https://www.amazon.ca/dp/B0BDHX8Z63?tag=YOUR_TAG",
   },
   {
     asin:"B0CHX2FKXG", cat:"TVs",
@@ -753,7 +756,7 @@ const DEMO_PRODUCTS = [
     image:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=1200&q=80",
     badge:"Deal", badgeColor:"#ef4444",
     features:["Neo QLED","4K 120Hz","Anti-Glare"],
-    url:"https://www.amazon.com/dp/B0CHX2FKXG?tag=YOUR_TAG",
+    url:"https://www.amazon.ca/dp/B0CHX2FKXG?tag=YOUR_TAG",
   },
   {
     asin:"B0D3J9XDMQ", cat:"Phones",
@@ -762,7 +765,7 @@ const DEMO_PRODUCTS = [
     image:"https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=1200&q=80",
     badge:"New", badgeColor:"#10b981",
     features:["M4 chip","Ultra Retina XDR","Apple Pencil Pro"],
-    url:"https://www.amazon.com/dp/B0D3J9XDMQ?tag=YOUR_TAG",
+    url:"https://www.amazon.ca/dp/B0D3J9XDMQ?tag=YOUR_TAG",
   },
   {
     asin:"B09JQMJHXY", cat:"Laptops",
@@ -771,7 +774,7 @@ const DEMO_PRODUCTS = [
     image:"https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=1200&q=80",
     badge:"Top Rated", badgeColor:"#8b5cf6",
     features:["8K DPI","MagSpeed scroll","7 buttons"],
-    url:"https://www.amazon.com/dp/B09JQMJHXY?tag=YOUR_TAG",
+    url:"https://www.amazon.ca/dp/B09JQMJHXY?tag=YOUR_TAG",
   },
   {
     asin:"B0CX4TFBSY", cat:"Cameras",
@@ -780,7 +783,7 @@ const DEMO_PRODUCTS = [
     image:"https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=1200&q=80",
     badge:"Trending", badgeColor:"#8b5cf6",
     features:["3-axis stabilizer","ActiveTrack 6.0","Foldable"],
-    url:"https://www.amazon.com/dp/B0CX4TFBSY?tag=YOUR_TAG",
+    url:"https://www.amazon.ca/dp/B0CX4TFBSY?tag=YOUR_TAG",
   },
   {
     asin:"B09B2H3HXJ", cat:"Gaming",
@@ -789,7 +792,7 @@ const DEMO_PRODUCTS = [
     image:"https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=1200&q=80",
     badge:"Hot", badgeColor:"#ef4444",
     features:["Haptic feedback","Adaptive triggers","Built-in mic"],
-    url:"https://www.amazon.com/dp/B09B2H3HXJ?tag=YOUR_TAG",
+    url:"https://www.amazon.ca/dp/B09B2H3HXJ?tag=YOUR_TAG",
   },
   {
     asin:"B07VGRJDFY", cat:"Smart Home",
@@ -798,7 +801,7 @@ const DEMO_PRODUCTS = [
     image:"https://images.unsplash.com/photo-1543512214-318c7553f230?w=1200&q=80",
     badge:"Deal", badgeColor:"#ef4444",
     features:["Alexa built-in","Smart home hub","Premium sound"],
-    url:"https://www.amazon.com/dp/B07VGRJDFY?tag=YOUR_TAG",
+    url:"https://www.amazon.ca/dp/B07VGRJDFY?tag=YOUR_TAG",
   },
 ];
 
@@ -1218,8 +1221,8 @@ function addCustomProduct(event) {
     features,
     badge: badge || null,
     badgeColor: badge ? badgeColor : null,
-    url: url || `https://www.amazon.com/dp/${asin}?tag=${associateTag}`,
-    affiliateUrl: url || `https://www.amazon.com/dp/${asin}?tag=${associateTag}`,
+    url: url || `${AMAZON_BASE}/dp/${asin}?tag=${associateTag}`,
+    affiliateUrl: url || `${AMAZON_BASE}/dp/${asin}?tag=${associateTag}`,
   };
 
   customProducts.unshift(product);
@@ -1258,7 +1261,7 @@ function clearCustomProducts() {
 // ── HELPERS ──────────────────────────────────────────────────
 function getAffiliateUrl(product) {
   const asin = product.asin || "";
-  return product.affiliateUrl || product.url || `https://www.amazon.com/dp/${asin}?tag=${associateTag}`;
+  return product.affiliateUrl || product.url || `${AMAZON_BASE}/dp/${asin}?tag=${associateTag}`;
 }
 
 function escapeHtml(str) {

@@ -40,8 +40,18 @@ const CONFIG = {
   accessKey:    process.env.ACCESS_KEY    || "YOUR_ACCESS_KEY_ID",
   secretKey:    process.env.SECRET_KEY    || "YOUR_SECRET_ACCESS_KEY",
   associateTag: process.env.ASSOCIATE_TAG || "yourtag-20",
-  region:       "us-east-1",              // us-east-1 for amazon.com (change for other countries)
-  host:         "webservices.amazon.com",
+  // IMPORTANT:
+  // - `region` is the AWS region used in Signature V4.
+  // - `host` is the PA-API endpoint host (varies by country).
+  // - `marketplace` is the marketplace domain used in request payloads.
+  //
+  // Amazon CA defaults:
+  //   host:        webservices.amazon.ca
+  //   marketplace: www.amazon.ca
+  // Region commonly remains an AWS region string (e.g. us-east-1 / eu-west-1).
+  region:       process.env.PAAPI_REGION || "us-east-1",
+  host:         process.env.PAAPI_HOST   || "webservices.amazon.ca",
+  marketplace:  process.env.PAAPI_MARKETPLACE || "www.amazon.ca",
   path:         "/paapi5/searchitems",
   pathGetItems: "/paapi5/getitems",
 };
@@ -238,8 +248,8 @@ function parseItems(items) {
       features,
       badge,
       badgeColor,
-      url:          item.DetailPageURL || `https://www.amazon.com/dp/${item.ASIN}?tag=${CONFIG.associateTag}`,
-      affiliateUrl: item.DetailPageURL || `https://www.amazon.com/dp/${item.ASIN}?tag=${CONFIG.associateTag}`,
+      url:          item.DetailPageURL || `https://${CONFIG.marketplace}/dp/${item.ASIN}?tag=${CONFIG.associateTag}`,
+      affiliateUrl: item.DetailPageURL || `https://${CONFIG.marketplace}/dp/${item.ASIN}?tag=${CONFIG.associateTag}`,
     };
   });
 }
@@ -265,7 +275,7 @@ app.get("/api/search", async (req, res) => {
     SearchIndex: category,
     PartnerTag:  CONFIG.associateTag,
     PartnerType: "Associates",
-    Marketplace: "www.amazon.com",
+    Marketplace: CONFIG.marketplace,
     ItemCount:   count,
     Resources: [
       "ItemInfo.Title",
@@ -335,7 +345,7 @@ app.get("/api/product/:asin", async (req, res) => {
     ItemIds:     [asin],
     PartnerTag:  CONFIG.associateTag,
     PartnerType: "Associates",
-    Marketplace: "www.amazon.com",
+    Marketplace: CONFIG.marketplace,
     Resources: [
       "ItemInfo.Title",
       "ItemInfo.Features",
@@ -381,6 +391,8 @@ app.get("/health", (req, res) => {
     configured,
     associateTag: CONFIG.associateTag,
     region:       CONFIG.region,
+    host:         CONFIG.host,
+    marketplace:  CONFIG.marketplace,
     message:      configured
       ? "✓ PA-API keys are set. Ready to fetch real Amazon products."
       : "⚠️ Keys not set. Replace YOUR_ACCESS_KEY_ID and YOUR_SECRET_ACCESS_KEY in server.js",
